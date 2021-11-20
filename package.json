@@ -1,0 +1,27 @@
+{
+  "name": "fullstack-hy-osa3",
+  "version": "1.0.0",
+  "description": "Helsingin yliopiston Full stack -websovelluskehitys, 2021 (fullstackopen.com)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tongvist/fullstack-hy-osa3.git"
+  },
+  "author": "Niklas Peltonen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tongvist/fullstack-hy-osa3/issues"
+  },
+  "homepage": "https://github.com/tongvist/fullstack-hy-osa3#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
