@@ -22,9 +22,21 @@ let persons = [
       {
         name: "Mary Poppendick",
         number: "39-23-6423122",
-        id: 3
+        id: 4
       }
     ]
+
+app.get("/api/persons/:id", (req, res) => {
+    const id = Number(req.params.id);
+    
+    const person = persons.find(person => {
+        return person.id === id});
+    if (person) {
+        return res.json(person);
+    } 
+
+    res.status(404).end();
+});
 
 app.get("/api/persons", (req, res) => {
     res.json(persons);
