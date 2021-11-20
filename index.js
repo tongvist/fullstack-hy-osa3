@@ -3,7 +3,26 @@ const app = express();
 const morgan = require('morgan');
 
 app.use(express.json());
-app.use(morgan('tiny'));
+
+// Attach a 'data' token to POST requests to log the request body
+// Returns a function with the name of the first parameter
+// To get the value, needs to be called with (req, res)
+morgan.token('data', function getBody (req, res) {
+    return req.method === 'POST' ? JSON.stringify(req.body) : null;
+});
+
+app.use(
+    morgan(function (tokens, req, res) {
+        return [
+            tokens.method(req, res),
+            tokens.url(req, res),
+            tokens.status(req, res),
+            tokens.res(req, res, 'content-length'), '-',
+            tokens['response-time'](req, res), 'ms',
+            tokens.data(req, res) // tokens.data -function defined above with morgan.token('name', cb)
+        ].join(' ')
+    }
+))
 
 const PORT = 3001;
 
@@ -81,7 +100,8 @@ app.get("/info", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-    let newPerson = req.body;
+    let newPerson = {...req.body};
+    
     if (!newPerson.name || newPerson.name.length === 0) {
         return res.status(400).json({error: "Missing name."});
     }
