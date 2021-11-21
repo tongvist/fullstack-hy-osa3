@@ -71,9 +71,14 @@ const generateId = () => {
 }
 
 app.delete("/api/persons/:id", (req, res) => {
-    const id = Number(req.params.id);
-    persons = persons.filter(person => person.id !== id);
-    res.status(204).end();
+    const id = req.params.id;
+
+    Person.findByIdAndRemove(id)
+        .then(result => {
+            res.status(204).end();
+        })
+        .catch(error => console.log("Error removing document:", error.message));
+
 });
 
 app.get("/api/persons/:id", (req, res) => {
