@@ -7,8 +7,8 @@ const Person = require('./models/person');
 const app = express();
 
 app.use(cors());
-app.use(express.json());
 app.use(express.static('build'));
+app.use(express.json());
 
 // Attach a 'data' token to POST requests to log the request body
 // Returns a function with the name of the first parameter
@@ -70,18 +70,18 @@ const generateId = () => {
     }
 }
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
     const id = req.params.id;
 
     Person.findByIdAndRemove(id)
         .then(result => {
             res.status(204).end();
         })
-        .catch(error => console.log("Error removing document:", error.message));
+        .catch(error => next(error));
 
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
     const id = Number(req.params.id);
 
     const person = persons.find(person => {
@@ -93,16 +93,15 @@ app.get("/api/persons/:id", (req, res) => {
     res.status(404).end();
 });
 
-app.get("/api/persons", (req, res) => {
-    // res.json(persons);
+app.get("/api/persons", (req, res, next) => {
     Person.find({})
         .then(result => {
             res.json(result);
         })
-        .catch(error => console.log("Error fetching people:", error.message));
+        .catch(error => next(error));
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", (req, res, next) => {
     const numOfPeople = persons.length;
     const time = new Date();
 
@@ -113,7 +112,7 @@ app.get("/info", (req, res) => {
     res.send(infoPage);
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
     let newPerson = {...req.body};
     
     if (!newPerson.name || newPerson.name.length === 0) {
@@ -129,8 +128,20 @@ app.post("/api/persons", (req, res) => {
         .then(result => {
             res.json(result);
         })
-        .catch(error => console.log("Error adding person:", error.message));
+        .catch(error => next(error));
 });
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({error: "Unknown endpoint"});
+}
+
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message);
+    next(error);
+}
+
+app.use(unknownEndpoint);
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
