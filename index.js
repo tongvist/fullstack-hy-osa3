@@ -118,17 +118,13 @@ app.post("/api/persons", (req, res) => {
         return res.status(400).json({error: "Missing number."});
     }
 
-    const exists = persons.find(person => person.name === newPerson.name);
-    if (exists) {
-        return res.status(400).json({error: `Person with the name ${exists.name} is already in the list` });
-    }
+    const person = new Person(newPerson);
 
-    const id = generateId();
-    newPerson.id = id;
-
-    persons = persons.concat(newPerson);
-    
-    res.json(newPerson);
+    person.save(newPerson)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => console.log("Error adding person:", error.message));
 });
 
 const PORT = process.env.PORT;
