@@ -5,6 +5,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('build'));
 
 // Attach a 'data' token to POST requests to log the request body
 // Returns a function with the name of the first parameter
