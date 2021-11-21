@@ -1,7 +1,9 @@
+const cors = require('cors');
 const express = require('express');
-const app = express();
 const morgan = require('morgan');
+const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 // Attach a 'data' token to POST requests to log the request body
@@ -23,8 +25,6 @@ app.use(
         ].join(' ')
     }
 ))
-
-const PORT = 3001;
 
 let persons = [
       {
@@ -122,6 +122,7 @@ app.post("/api/persons", (req, res) => {
     res.json(newPerson);
 });
 
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
