@@ -75,7 +75,11 @@ app.delete("/api/persons/:id", (req, res, next) => {
 
     Person.findByIdAndRemove(id)
         .then(result => {
-            res.status(204).end();
+            if (result) {
+                return res.status(204).end();
+            } else {
+                return res.status(404).end();
+            }
         })
         .catch(error => next(error));
 
@@ -131,12 +135,31 @@ app.post("/api/persons", (req, res, next) => {
         .catch(error => next(error));
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+    const id = req.params.id;
+    const data = req.body;
+
+    if (!data.number) {
+        console.log("Error: Missing number from update data");
+        return res.status(400).end();
+    }
+
+    Person.findByIdAndUpdate(id, data, {new: true})
+        .then(result => {
+            res.status(200).json(result);
+        })
+        .catch(error => next(error));
+});
+
 const unknownEndpoint = (req, res) => {
     res.status(404).send({error: "Unknown endpoint"});
 }
 
 const errorHandler = (error, req, res, next) => {
-    console.log(error.message);
+    console.log(error);
+    if (error.name === 'CastError') {
+        return res.status(400).send({error: 'Malformatted id'});
+    }
     next(error);
 }
 
