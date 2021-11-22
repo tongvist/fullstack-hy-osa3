@@ -2,7 +2,7 @@
 
 Helsingin yliopiston Full stack -websovelluskehitys, 2021 (fullstackopen.com)
 
-Tehtävät 3.1 - 3.11
+Tehtävät 3.1 - 3.21
 
 Linkki sovellukseen:
 
