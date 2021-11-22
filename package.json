@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "lint": "node_modules/.bin/eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../fullstack-hy/osa2/puhelinluettelo/ && npm run build --prod && cp -r build ../../../fullstack-hy-osa3",
     "deploy": "git push heroku main",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/tongvist/fullstack-hy-osa3#readme",
   "devDependencies": {
+    "eslint": "^8.3.0",
     "nodemon": "^2.0.15"
   },
   "dependencies": {
