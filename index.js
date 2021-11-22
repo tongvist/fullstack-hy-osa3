@@ -86,15 +86,17 @@ app.delete("/api/persons/:id", (req, res, next) => {
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
-    const id = Number(req.params.id);
+    const id = req.params.id;
 
-    const person = persons.find(person => {
-        return person.id === id});
-    if (person) {
-        return res.json(person);
-    } 
-
-    res.status(404).end();
+    Person.findById(id)
+        .then(result => {
+            if (result) {
+                return res.json(result);
+            } else {
+                return res.status(404).end();
+            }
+        })
+        .catch(error => next(error));
 });
 
 app.get("/api/persons", (req, res, next) => {
@@ -106,14 +108,23 @@ app.get("/api/persons", (req, res, next) => {
 });
 
 app.get("/info", (req, res, next) => {
-    const numOfPeople = persons.length;
-    const time = new Date();
+    
+    Person.find({})
+    .then(result => {
+        if (result) {
+            const numOfPeople = result.length;
+            const time = new Date();
 
-    const infoPage = 
-        `<p>Phonebook has info for ${numOfPeople} people</p>
-        ${time}`;
-
-    res.send(infoPage);
+            const infoPage = 
+                `<p>Phonebook has info for ${numOfPeople} people</p>
+                ${time}`;
+        
+            return res.send(infoPage);
+        } else {
+            return res.status(404).end();
+        }
+    })
+    .catch(error => next(error))
 });
 
 app.post("/api/persons", (req, res, next) => {
